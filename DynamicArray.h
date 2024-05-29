@@ -78,6 +78,7 @@ public:
     int getSize() const {
         return size;
     }
+
     void set(int index, const T& value) {
         // исключение выбросит конструкция (*this)[index]
         (*this)[index] = value; // здесь все нормально, происходит стандартное присваивание. Т.е. value копируется в array[index]
