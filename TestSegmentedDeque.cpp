@@ -1,4 +1,5 @@
 #include <cassert>
+#include <stdexcept>
 #include "SegmentedDeque.h"
 #include "MutableArraySequence.h"
 #include "LinkedList.h"
