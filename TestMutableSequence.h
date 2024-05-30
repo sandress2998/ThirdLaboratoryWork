@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <stdexcept>
 #include "DynamicArray.h"
 #include "LinkedList.h"
 #include "Sequence.h"
