@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include "Sequence.h"
 #include "ImmutableSequence.h"
 #include "DynamicArray.h"
