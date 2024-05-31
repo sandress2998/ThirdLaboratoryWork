@@ -47,6 +47,7 @@ private:
     }
 
     void deleteDeque() {
+        if (size == 0) return;
         for (int i = 0; i < arrayPtr->getSize(); ++i) {
             delete[] (*arrayPtr)[i];
         }
@@ -54,33 +55,33 @@ private:
     }
 
 public:
-    SegmentedDeque(int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {}
+    SegmentedDeque(int bufSize = 4): bufSize(bufSize) {}
 
-    SegmentedDeque(const Sequence<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
+    SegmentedDeque(const Sequence<T>& other, int bufSize = 4): bufSize(bufSize) {
         for (int i = 0; i < other.getLength(); ++i) {
             append(other.get(i));
         }
     }
 
-    SegmentedDeque(T* array, int size, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
+    SegmentedDeque(T* array, int size, int bufSize = 4): bufSize(bufSize) {
         for (int i = 0; i < size; ++i) {
             append(array[i]);
         }
     }
 
-    SegmentedDeque(const LinkedList<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
+    SegmentedDeque(const LinkedList<T>& other, int bufSize = 4): bufSize(bufSize) {
         for (int i = 0; i < other.getLength(); ++i) {
             append(other.get(i));
         }
     }
 
-    SegmentedDeque(const DynamicArray<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
+    SegmentedDeque(const DynamicArray<T>& other, int bufSize = 4): bufSize(bufSize) {
         for (int i = 0; i < other.getSize(); ++i) {
             append(other.get(i));
         }
     }
 
-    SegmentedDeque(const SegmentedDeque<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
+    SegmentedDeque(const SegmentedDeque<T>& other, int bufSize = 4): bufSize(bufSize) {
         for (int i = 0; i < other.getLength(); ++i) {
             append(other.get(i));
         }
@@ -103,7 +104,6 @@ public:
         deleteDeque();
 
         size = 0;
-        arrayPtr = new DynamicArray<T*>(0);
         offsetTail = 0;
         offsetHead = 0;
         bufSize = other.bufSize;
@@ -139,6 +139,7 @@ public:
     }
 
     void append(const T& item) {
+        if (size == 0) arrayPtr = new DynamicArray<T*>(0);
         if (offsetHead == 0) { // добавляем сегмент в конец
             increaseHead();
             (*arrayPtr)[arrayPtr->getSize() - 1][offsetHead] = item;
@@ -151,6 +152,7 @@ public:
     }
 
     void prepend(const T& item) {
+        if (size == 0) arrayPtr = new DynamicArray<T*>(0);
         if (offsetTail == 0) { // добавляем сегмент в начало
             increaseTail();
             (*arrayPtr)[0][bufSize - 1] = item;
@@ -164,6 +166,7 @@ public:
 
     void insertAt(int index, const T& item) {
         if (index < 0 || index > size) throw std::out_of_range("Entered index is out of range.\n");
+        if (size == 0) arrayPtr = new DynamicArray<T*>(0);
         if (index == size) {
             append(item);
             return;
