@@ -18,6 +18,9 @@ void Test::startTest() {
     testImmutableListSequence();
     testDynamicArray();
     testLinkedList();
+    testSegmentedDeque();
+    testMutableSegmentedDeque();
+    testImmutableSegmentedDeque();
 }
 
 void Test::testDynamicArray() {
