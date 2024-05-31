@@ -1,24 +1,6 @@
 #pragma once
 class TestMutableSegmentedDeque {
 public:
-    /*
-    void testClass();
-    void testConstructors();
-    void testAssignmentOperator();
-    void testSquareAnkles();
-    void testGet();
-    void testGetFirst();
-    void testGetLast();
-    void testSet();
-    void testAppend();
-    void testPrepend();
-    void testInsertAt();
-    void testPopHead();
-    void testPopTail();
-    void testRemoveAt();
-    void testConcat();
-    void testGetSubsequence();
-    */
     void testClass();
 
     void testConstructors();
