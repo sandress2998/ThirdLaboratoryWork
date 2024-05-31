@@ -6,6 +6,7 @@
 #include "Person.h"
 #include <string>
 #include <iostream>
+#include <stdexcept>
 
 template <typename T>
 class UserSequence {
