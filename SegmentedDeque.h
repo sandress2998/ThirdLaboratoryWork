@@ -147,18 +147,18 @@ public:
         return size;
     }
 
-    T get(int index) const {
+   const T& get(int index) const {
         // если index вне допустимых значений, то (*this)[index] выбросит исключение
         return (*this)[index];
     }
 
-    T getFirst() const {
+    const T& getFirst() const {
         if (size == 0) throw std::out_of_range("You tried to get value from the empty SegmentedDeque.\n");
         //return arrayPtr[0][(bufSize - offsetTail) % bufSize];
         return (*this)[0];
     }
 
-    T getLast() const {
+    const T& getLast() const {
         if (size == 0) throw std::out_of_range("You tried to get value from the empty SegmentedDeque.\n");
         //return arrayPtr[segmentNumber - 1][(offsetHead + bufSize - 1) % bufSize];
         return (*this)[size - 1];
