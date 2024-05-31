@@ -224,7 +224,6 @@ public:
         if (offsetTail == 1) { // удаляем первый сегмент
             decreaseTail();
             offsetTail = 0;
-            --segmentNumber;
         } else { // не удаляем сегмент
             if (offsetTail == 0) {
                 offsetTail = bufSize;
