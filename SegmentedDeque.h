@@ -54,33 +54,33 @@ private:
     }
 
 public:
-    SegmentedDeque(int bufSize = 4): bufSize(bufSize) {}
+    SegmentedDeque(int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {}
 
-    SegmentedDeque(const Sequence<T>& other, int bufSize = 4): bufSize(bufSize) {
+    SegmentedDeque(const Sequence<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
         for (int i = 0; i < other.getLength(); ++i) {
             append(other.get(i));
         }
     }
 
-    SegmentedDeque(T* array, int size, int bufSize = 4): bufSize(bufSize) {
+    SegmentedDeque(T* array, int size, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
         for (int i = 0; i < size; ++i) {
             append(array[i]);
         }
     }
 
-    SegmentedDeque(const LinkedList<T>& other, int bufSize = 4): bufSize(bufSize) {
+    SegmentedDeque(const LinkedList<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
         for (int i = 0; i < other.getLength(); ++i) {
             append(other.get(i));
         }
     }
 
-    SegmentedDeque(const DynamicArray<T>& other, int bufSize = 4): bufSize(bufSize) {
+    SegmentedDeque(const DynamicArray<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
         for (int i = 0; i < other.getSize(); ++i) {
             append(other.get(i));
         }
     }
 
-    SegmentedDeque(const SegmentedDeque<T>& other, int bufSize = 4): bufSize(bufSize) {
+    SegmentedDeque(const SegmentedDeque<T>& other, int bufSize = 4): bufSize(bufSize), arrayPtr(new DynamicArray<T*>(0)) {
         for (int i = 0; i < other.getLength(); ++i) {
             append(other.get(i));
         }
