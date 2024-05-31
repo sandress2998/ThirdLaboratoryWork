@@ -10,59 +10,30 @@ template <typename T>
 class SegmentedDeque {
 private:
     int bufSize; // длина сегмента
-    int segmentNumber = 0; // количество сегментов
     int size = 0; // кол-во элементов во всех сегментах
-    T** arrayPtr = nullptr; // указатель на массив указателей на сегменты
+    DynamicArray<T*>* arrayPtr = nullptr; // массив указателей на сегменты.
     int offsetTail = 0; // отступ, чтобы создать новый элемент сзади
     int offsetHead = 0; // отступ, чтобы создать новый элемент спереди
 
     void increaseHead() {
-        // создаем новый сегмент
-        T** helpArray = new T*[segmentNumber + 1];
-        for (int i = 0; i < segmentNumber; ++i) {
-            helpArray[i] = arrayPtr[i];
-        }
-        delete[] arrayPtr;
-        arrayPtr = helpArray;
-        ++segmentNumber;
-        arrayPtr[segmentNumber - 1] = new T[bufSize];
+        arrayPtr->append(new T[bufSize]);
     }
 
     void decreaseHead() {
-        if (segmentNumber == 0) throw std::out_of_range("You tried to delete element from empty deque.\n");
-        T** helpArray = new T*[segmentNumber - 1];
-        for (int i = 0; i < segmentNumber - 1; ++i) {
-            helpArray[i] = arrayPtr[i];
-        }
-        delete[] arrayPtr[segmentNumber - 1]; // удаляем последний сегмент
-        delete[] arrayPtr; // удаляем массив указателей
-        arrayPtr = helpArray;
-        --segmentNumber;
-        if (segmentNumber == 0) arrayPtr = nullptr;
+        arrayPtr->resize(arrayPtr->getSize() - 1);
     }
 
     void increaseTail() {
-        T** helpArray = new T*[segmentNumber + 1];
-        for (int i = 0; i < segmentNumber; ++i) {
-            helpArray[i + 1] = arrayPtr[i];
-        }
-        delete[] arrayPtr;
-        arrayPtr = helpArray;
-        ++segmentNumber;
-        arrayPtr[0] = new T[bufSize];
+        arrayPtr->prepend(new T[bufSize]);
     }
 
-    void decreaseTail() {
-        if (segmentNumber == 0) throw std::out_of_range("You tried to delete element from empty deque.\n");
-        T** helpArray = new T*[segmentNumber - 1];
-        for (int i = 1; i < segmentNumber; ++i) {
-            helpArray[i - 1] = arrayPtr[i];
+    void decreaseTail() { // увы, нет соответствующего метода в DynamicArray
+        DynamicArray<T*>* bufArrayPtr = new DynamicArray<T*>(arrayPtr->getSize() - 1);
+        for (int i = 0; i < arrayPtr->getSize() - 1; ++i) {
+            bufArrayPtr->set(i, (*arrayPtr)[i + 1]);
         }
-        delete[] arrayPtr[0]; // удаляем последний сегмент
-        delete[] arrayPtr; // удаляем массив указателей
-        arrayPtr = helpArray;
-        --segmentNumber;
-        if (segmentNumber == 0) arrayPtr = nullptr;
+        delete arrayPtr;
+        arrayPtr = bufArrayPtr;
     }
 
     // const - метод, так как используется в [] const
@@ -70,9 +41,16 @@ private:
         if (index < 0 || index >= size) throw std::out_of_range("Entered index is out of range.\n");
         int segmentIndex = index / bufSize;
         index %= bufSize;
-        if (offsetTail == 0) return arrayPtr[segmentIndex][index - offsetTail];
-        if (offsetTail < index + 1) return arrayPtr[segmentIndex + 1][index - offsetTail];
-        return arrayPtr[segmentIndex][(bufSize - offsetTail + index) % bufSize];
+        if (offsetTail == 0) return (*arrayPtr)[segmentIndex][index - offsetTail];
+        if (offsetTail < index + 1) return (*arrayPtr)[segmentIndex + 1][index - offsetTail];
+        return (*arrayPtr)[segmentIndex][(bufSize - offsetTail + index) % bufSize];
+    }
+
+    void deleteDeque() {
+        for (int i = 0; i < arrayPtr->getSize(); ++i) {
+            delete[] (*arrayPtr)[i];
+        }
+        delete arrayPtr;
     }
 
 public:
@@ -109,10 +87,7 @@ public:
     }
 
     ~SegmentedDeque() {
-        for (int i = 0; i < segmentNumber; ++i) {
-            delete[] arrayPtr[i];
-        }
-        delete[] arrayPtr;
+        deleteDeque();
     }
 
     T& operator[](int index) {
@@ -125,13 +100,10 @@ public:
 
     SegmentedDeque<T>& operator=(const SegmentedDeque<T>& other) {
         // удаляем текущий дек
-        for (int i = 0; i < segmentNumber; ++i) {
-            delete[] arrayPtr[i];
-        }
-        delete[] arrayPtr;
-        segmentNumber = 0;
+        deleteDeque();
+
         size = 0;
-        arrayPtr = nullptr;
+        arrayPtr = new DynamicArray<T*>(0);
         offsetTail = 0;
         offsetHead = 0;
         bufSize = other.bufSize;
@@ -147,8 +119,8 @@ public:
         return size;
     }
 
-   const T& get(int index) const {
-        // если index вне допустимых значений, то (*this)[index] выбросит исключение
+    const T& get(int index) const {
+        // если index вне допустимых значений, то getPrivate(...) выбросит исключение
         return (*this)[index];
     }
 
@@ -169,10 +141,10 @@ public:
     void append(const T& item) {
         if (offsetHead == 0) { // добавляем сегмент в конец
             increaseHead();
-            arrayPtr[segmentNumber - 1][offsetHead] = item;
+            (*arrayPtr)[arrayPtr->getSize() - 1][offsetHead] = item;
             offsetHead = 1;
         } else { // не добавляем сегмент
-            arrayPtr[segmentNumber - 1][offsetHead] = item;
+            (*arrayPtr)[arrayPtr->getSize() - 1][offsetHead] = item;
             offsetHead = (offsetHead + 1) % bufSize;
         }
         ++size;
@@ -181,10 +153,10 @@ public:
     void prepend(const T& item) {
         if (offsetTail == 0) { // добавляем сегмент в начало
             increaseTail();
-            arrayPtr[0][bufSize - 1] = item;
+            (*arrayPtr)[0][bufSize - 1] = item;
             ++offsetTail;
         } else { // не добавляем сегмент
-            arrayPtr[0][bufSize - offsetTail - 1] = item;
+            (*arrayPtr)[0][bufSize - offsetTail - 1] = item;
             offsetTail = (offsetTail + 1) % bufSize;
         }
         ++size;
