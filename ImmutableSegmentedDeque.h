@@ -96,7 +96,7 @@ public:
     }
 
     ImmutableSegmentedDeque<T>* concat(const Sequence<T>& other) const override {
-        ImmutableSegmentedDeque<T>* result = new ImmutableSegmentedDeque<T>(*this);
+        ImmutableSegmentedDeque<T>* result = instance();
         for (int i = 0; i < other.getLength(); ++i) {
             result->deque->append(other.get(i));
         }
