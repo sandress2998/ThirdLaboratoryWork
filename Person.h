@@ -53,9 +53,7 @@ public:
     Person(std::string firstName, std::string secondName): firstName(firstName), secondName(secondName) {
         personID.increaseID();
     }
-    Person(const Person& other): firstName(other.firstName), secondName(other.secondName) {
-        personID.increaseID();
-    }
+    Person(const Person& other): firstName(other.firstName), secondName(other.secondName) {}
 
     std::string getID() const {
         return personID.getID();
